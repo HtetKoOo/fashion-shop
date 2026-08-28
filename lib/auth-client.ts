@@ -5,7 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 
 export const { signIn, signUp, useSession, emailOtp } = createAuthClient({
     /** The base URL of the server (optional if you're using the same domain) */
-    baseURL: process.env.BETTER_AUTH_BASE_URL,
+    baseURL: process.env.BETTER_AUTH_URL,
     fetchOptions: {
         credentials: "include",
     },

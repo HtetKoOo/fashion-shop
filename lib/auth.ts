@@ -1,11 +1,12 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { emailOTP } from "better-auth/plugins";
+import { sendEmail } from "./email";
 
 export const auth = betterAuth({
-  // baseURL: process.env.BETTER_AUTH_BASE_URL,
+  baseURL: process.env.BETTER_AUTH_URL,
   // trustedOrigins: ["http://localhost:5173"],
   database: prismaAdapter(prisma, {
     provider: "postgresql",
@@ -18,7 +19,7 @@ export const auth = betterAuth({
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      prompt: "select_account", // always ask user to select account
+      prompt: "select_account", // Always prompt to select account
     },
   },
   user: {
@@ -29,16 +30,24 @@ export const auth = betterAuth({
       },
     },
   },
+  // session: {
+  //       cookieCache: {
+  //           enabled: true,
+  //           maxAge: 5 * 60, // 5 minutes
+  //       }
+  //   },
   plugins: [
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        if (type === "sign-in") {
-          // Send the OTP for sign in
-        } else if (type === "email-verification") {
-          // Send the OTP for email verification
-        } else {
-          // Send the OTP for password reset
-        }
+        const subjects: Record<string, string> = {
+          "email-verification": "Verify Your Email",
+          forget_password: "Reset Your Password",
+        };
+        await sendEmail({
+          to: email,
+          subject: subjects[type],
+          html: `<p>Your verification code is: <strong>${otp}</strong></p>`,
+        });
       },
     }),
     nextCookies(),
