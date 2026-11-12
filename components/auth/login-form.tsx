@@ -136,6 +136,18 @@ function LoginFormInner() {
               </Field>
             )}
           />
+          {searchParams.get("reset") === "success" && (
+            <p role="status" className="text-sm">
+              Password reset. Sign in with your new password.
+            </p>
+          )}
+
+          <Link
+            href="/forgot-password"
+            className="self-end text-sm underline underline-offset-4"
+          >
+            Forgot password?
+          </Link>
           {form.formState.errors.root && (
             <FieldError>{form.formState.errors.root.message}</FieldError>
           )}

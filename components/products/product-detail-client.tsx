@@ -125,6 +125,7 @@ function ProductDetailClient({ product }: ProductDetailClientProps) {
           className="object-cover"
           sizes="(max-width: 1024px) 100vw, 50vw"
           priority
+          loading="eager"
         />
       </div>
       <div className="flex flex-col gap-6">
